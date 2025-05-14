@@ -1,31 +1,60 @@
 #include <SFML/Graphics.hpp>
 
-int main()
-{
-    // Crear la ventana
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Ejemplo simple de SFML");
+//Son punteros globales para poder gestionar los recursos que utilizan
+sf::RenderWindow* window;
+sf::CircleShape* circle;
 
-    // Crear un círculo
-    sf::CircleShape circle(100.f); // radio 100
-    circle.setFillColor(sf::Color::Blue);
-    circle.setPosition(200.f, 150.f);
 
-    // Bucle principal
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            // Cerrar la ventana si el usuario lo indica
-            if (event.type == sf::Event::Closed)
-                window.close();
+//Este es el gameloop de la aplicación
+void 
+init() {
+    window = new sf::RenderWindow(sf::VideoMode(800, 600), "Graphos");
+    circle = new sf::CircleShape(100.0f);
+    circle->setFillColor(sf::Color::Green);
+    circle->setPosition(200.f, 150.f);
+}
+
+void 
+handleEvents() {
+    sf::Event event;
+    while (window->pollEvent(event)) {
+        // Cerrar la ventana si el usuario lo indica
+        if (event.type == sf::Event::Closed) {
+            window->close();
         }
+    }
+}
 
-        // Limpiar, dibujar y mostrar
-        window.clear();
-        window.draw(circle);
-        window.display();
+void 
+update() {
+    //Aquí va la lógica
+}
+
+void 
+render() {
+    // Limpiar, dibujar y mostrar
+    window->clear();
+    window->draw(*circle);
+    window->display();
+}
+
+void 
+destroy() {
+    delete window;
+    delete circle;
+}
+
+int 
+main()
+{
+    init();
+
+    while (window->isOpen())
+    {
+        handleEvents();
+        update();
+        render();
     }
 
-    return 0;
+    destroy();
 }
