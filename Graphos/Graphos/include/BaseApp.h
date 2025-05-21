@@ -1,5 +1,6 @@
 #pragma once
 #include <Prerequisites.h>
+#include "Window.h"
 
 class 
 	BaseApp {
@@ -26,12 +27,10 @@ public:
 	void
 	destroy();
 
-	void 
-	handleEvents();
-
 private:
 	//Son punteros globales para poder gestionar los recursos que utilizan
 	//Inician con m_ porque son miembros de una clase. Si estuvieran en main de forma global serían g_
-	sf::RenderWindow* m_window;
+	//sf::RenderWindow* m_window; -> Se creo una clase a parte para no depender de SFMLN
+	Window* m_window;
 	sf::CircleShape* m_circle;
 };
