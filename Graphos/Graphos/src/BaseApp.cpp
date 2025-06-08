@@ -10,13 +10,11 @@ BaseApp::run() {
           "run", 
           "Initializes result on a false statement, check method validations");
   }
-
   while (m_window->isOpen()) {
     m_window->handleEvents();
     update();
     render();
   }
-
   destroy();
 	return 0;
 }
@@ -27,7 +25,6 @@ BaseApp::init() {
   m_circle = new sf::CircleShape(100.0f);
   m_circle->setFillColor(sf::Color::Green);
   m_circle->setPosition(200.f, 150.f);
-
 	return true;
 }
 

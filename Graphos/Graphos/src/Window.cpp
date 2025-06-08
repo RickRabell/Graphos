@@ -42,32 +42,32 @@ Window::isOpen() const {
 
 void
 Window::clear(const sf::Color& color) {
-    if (m_window) {
-        m_window->clear(color);
-    }
-    else {
-        ERROR("Window", "clear", "Window is null")
-    }
+  if (m_window) {
+    m_window->clear(color);
+  }
+  else {
+    ERROR("Window", "clear", "Window is null")
+  }
 }
 
 void
 Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states) {
-    if (m_window) {
-        m_window->draw(drawable, states);
-    }
-    else {
-        ERROR("Window", "draw", "Window is null")
-    }
+  if (m_window) {
+    m_window->draw(drawable, states);
+  }
+  else {
+    ERROR("Window", "draw", "Window is null")
+  }
 }
 
 void
 Window::display() {
-    if (m_window) {
-        m_window->display();
-    }
-    else {
-        ERROR("Window", "display", "Window is null")
-    }
+  if (m_window) {
+    m_window->display();
+  }
+  else {
+    ERROR("Window", "display", "Window is null")
+  }
 }
 
 void 
