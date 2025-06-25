@@ -12,6 +12,10 @@
 
 //Third Parties
 #include <SFML/Graphics.hpp>
+#include <Memory\TsharedPointer.h>
+#include <Memory\TWeakPointer.h>
+#include <Memory\TStaticPtr.h>
+#include <Memory\TUniquePtr.h>
 
 //Imgui - Interfaz de usuario
 
@@ -20,7 +24,6 @@
 /**
  * @def SAFE_PTR_RELEASE(x)
  * @brief Safely releases a pointer and sets it to nullptr.
- *
  * This macro checks if the pointer @p x is not nullptr, deletes it, and then sets it to nullptr.
  * It is useful for preventing memory leaks and dangling pointers.
  *
@@ -31,7 +34,6 @@
 /**
  * @def MESSAGE(classObj, method, state)
  * @brief Logs a resource creation message to the standard error stream.
- *
  * This macro constructs and outputs a message indicating the creation of a resource,
  * including the class, method, and state information.
  *
@@ -50,7 +52,6 @@
  /**
   * @def ERROR(classObj, method, errorMSG)
   * @brief Logs an error message and terminates the program.
-  *
   * This macro constructs and outputs an error message to the standard error stream,
   * including the class, method, and error message. The program then exits with code 1.
   *
@@ -71,7 +72,6 @@
 /**
 * @enum ShapeType
 * @brief Enumerates the different types of shapes supported by the application.
-*
 * This enumeration defines the available shape types that can be used within the system.
 * Each value corresponds to a specific geometric shape.
 */
