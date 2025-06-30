@@ -3,7 +3,8 @@
 #include "Entity.h"
 #include "CShape.h"
 
-class Actor : Entity {
+class 
+Actor : Entity {
 public:
 	Actor() = default;
 	

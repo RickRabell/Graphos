@@ -32,7 +32,7 @@ BaseApp::init() {
   //m_circle = new sf::CircleShape(100.0f);
   //m_circle->setFillColor(sf::Color::Green);
   //m_circle->setPosition(200.f, 150.f);
-  m_shapePtr = EngineUtilities::MakeShared<Shape>();
+  m_shapePtr = EngineUtilities::MakeShared<CShape>();
   if (m_shapePtr) {
     m_shapePtr->createShape(ShapeType::CIRCLE);
     m_shapePtr->setFillColor(sf::Color::Green);

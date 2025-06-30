@@ -4,7 +4,8 @@
 
 class Window;
 
-class Entity {
+class 
+Entity {
 public:
 
 	virtual
@@ -33,7 +34,7 @@ public:
 	EngineUtilities::TSharedPointer<T>
 	getComponent() {
 		for (auto& component : components) {
-      Engine::Utilities::TSharedPointer<T> specificComponent = component.template dynamic_pointer_cast<T>();
+      EngineUtilities::TSharedPointer<T> specificComponent = component.template dynamic_pointer_cast<T>();
 			if (specificComponent) {
 				return specificComponent;
 			}

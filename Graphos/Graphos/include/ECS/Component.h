@@ -25,7 +25,8 @@ ComponentType {
 * La clase Component define la interfaz básica que deben implementar todos los componentes del sistema ECS.
 * permitiendo actualizar y renderizar el componente, así como obtener su tipo
 */
-class Component {
+class 
+Component {
 public:
   Component() = default;
 
