@@ -67,6 +67,18 @@ CShape::setPosition(float x, float y) {
 
 /*
 void
+CShape::setPosition(const sf::Vector2& position) {
+  if (m_shapePtr) {
+    m_shapePtr->setPosition(position);
+  }
+  else {
+    ERROR("CShape", "setPosition", "Shape is not initialized");
+  }
+}
+*/
+
+/*
+void
 CShape::setPosition(const sf::Vector2f& position) {
   if (m_shape) {
     m_shape->setPosition(position);

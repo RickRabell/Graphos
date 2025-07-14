@@ -237,7 +237,7 @@ namespace EngineUtilities {
 				 * @brief Libera el objeto actual y opcionalmente asigna un nuevo objeto.
 				 *
 				 * @param newPtr Nuevo puntero crudo al objeto que se va a gestionar (por defecto es nullptr).
-				 */
+		*/
 		void reset(T* newPtr = nullptr)
 		{
 			// Disminuir el recuento de referencias del objeto actual
@@ -261,20 +261,22 @@ namespace EngineUtilities {
 			}
 		}
 
-		//Método de conversión para hacer cast dinámico
-    template<typename U>
-		TSharedPointer<U> dynamic_pointer_cast() const {
-      // Intenta convertir el puntero de tipo T a tipo U
-			U* castedPtr = dynamic_cast<U*>(ptr);
-			if (castedPtr) {
-        // Si la conversión es exitosa, crea un nuevo TSharedPointer<U>
-				return TSharedPointer<U>(castedPtr, refCount);
-			} 
-			else {
-        //Si falla, devuelve un TSharedPointer<U> nulo
-				return TSharedPointer<U>();
-      }
-		}
+        /*
+        *  @brief Conversion method for dynamic cast.
+        */
+        template<typename U>
+        TSharedPointer<U> dynamic_pointer_cast() const {
+					// Intenta convertir el puntero de tipo T a tipo U
+					U* castedPtr = dynamic_cast<U*>(ptr);
+					if (castedPtr) {
+						// Si la conversión es exitosa, crea un nuevo TSharedPointer<U>
+						return TSharedPointer<U>(castedPtr, refCount);
+					} 
+					else {
+						//Si falla, devuelve un TSharedPointer<U> nulo
+						return TSharedPointer<U>();
+					}
+        }
 	};
 
 	/**

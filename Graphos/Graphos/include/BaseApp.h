@@ -2,6 +2,7 @@
 #include <Prerequisites.h>
 #include "Window.h"
 #include "CShape.h"
+#include "ECS/Actor.h"
 
 /**
 * @class BaseApp
@@ -93,4 +94,6 @@ private:
   */
   //sf::CircleShape* m_circle;
   EngineUtilities::TSharedPointer<CShape> m_shapePtr;
+
+  EngineUtilities::TSharedPointer<Actor> m_ACircle;
 };
