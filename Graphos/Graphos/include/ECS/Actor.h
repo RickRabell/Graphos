@@ -25,80 +25,81 @@ class
 Actor : Entity {
 public:
 	/*
-   *  @brief Default constructor for Actor.
+		*  @brief Default constructor for Actor.
 	*/
 	Actor() = default;
 	
 	/*
-   *  @brief Constructs an Actor with a specified name.
-   *  @param actorName Name of the actor.
+		*  @brief Constructs an Actor with a specified name.
+		*  @param actorName Name of the actor.
 	*/
 	Actor(const std::string& actorName);
 	
 	/*
-   *  @brief Virtual destructor for Actor.
+		*  @brief Virtual destructor for Actor.
 	*/
-  virtual 
+	virtual 
 	~Actor() = default;
 	
 	/*
-   *  @brief Called when the actor is started or initialized.
+		*  @brief Called when the actor is started or initialized.
 	*/
 	void
 	start() override;
 
 	/*
-   *  @brief Updates the actor with the given delta time.
-   *  @param deltaTime Time elapsed since last update.
+		*  @brief Updates the actor with the given delta time.
+		*  @param deltaTime Time elapsed since last update.
 	*/
 	void
-  update(float deltaTime) override;
+	update(float deltaTime) override;
 
 	/*
-   *  @brief Renders the actor using the provided window.
-   *  @param window Shared pointer to the rendering window.
+		*  @brief Renders the actor using the provided window.
+		*  @param window Shared pointer to the rendering window.
 	*/
 	void
-  render(const EngineUtilities::TSharedPointer<Window>& window) override;
+	render(const EngineUtilities::TSharedPointer<Window>& window) override;
 
 	/*
-   *  @brief Called when the actor is destroyed.
+		*  @brief Called when the actor is destroyed.
 	*/
 	void
 	destroy() override;
 
   /*
-    *  @brief Retrieves a component of type T attached to the actor.
-    *  @tparam T Type of the component to retrieve.
-    *  @return Shared pointer to the component if found, otherwise an empty pointer.
+		*  @brief Retrieves a component of type T attached to the actor.
+		*  @tparam T Type of the component to retrieve.
+		*  @return Shared pointer to the component if found, otherwise an empty pointer.
   */
-  template<typename T>
+	template<typename T>
 	EngineUtilities::TSharedPointer<T>
 	getComponent();
 
 private:
 	/*
-   *  @brief Name of the actor.
+		*  @brief Name of the actor.
 	*/
 	std::string m_name = "Actor";
 };
 
 /*
-  *  @brief Retrieves a component of type T attached to the actor.
-  *         Iterates through all components and returns the first matching type.
-  *  @tparam T Type of the component to retrieve.
-  *  @return Shared pointer to the component if found, otherwise an empty pointer.
+	*  @brief Retrieves a component of type T attached to the actor.
+	*         Iterates through all components and returns the first matching type.
+	*  @tparam T Type of the component to retrieve.
+	*  @return Shared pointer to the component if found, otherwise an empty pointer.
 */
 template<typename T>
 inline EngineUtilities::TSharedPointer<T> 
 Actor::getComponent() {
 	for (auto& component : components) {
-    EngineUtilities::TSharedPointer<T> specificComponent = 
-																			 component.template dynamic_pointer_cast<T>();
+		EngineUtilities::TSharedPointer<T> 
+		specificComponent =  component.template dynamic_pointer_cast<T>();
+
 		if (specificComponent) {
-			return specificComponent;
-    }
+		return specificComponent;
+		}
 	}
-  // Devuelve un TSharedPointer vacío si no se encuentra el componente
-  return EngineUtilities::TSharedPointer<T>();
+	// Devuelve un TSharedPointer vacío si no se encuentra el componente
+	return EngineUtilities::TSharedPointer<T>();
 }
