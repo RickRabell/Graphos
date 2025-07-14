@@ -45,7 +45,7 @@ public:
    *  @brief Called when the actor is started or initialized.
 	*/
 	void
-		start() override {}
+	start() override;
 
 	/*
    *  @brief Updates the actor with the given delta time.
@@ -65,7 +65,7 @@ public:
    *  @brief Called when the actor is destroyed.
 	*/
 	void
-		destroy() override {}
+	destroy() override;
 
   /*
     *  @brief Retrieves a component of type T attached to the actor.

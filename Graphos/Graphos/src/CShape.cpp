@@ -49,10 +49,25 @@ CShape::createShape(ShapeType type) {
 }
 
 void
+CShape::start() {
+  
+}
+
+void
+CShape::update(float deltaTime) {
+  // Update logic for the shape can be added here if needed
+}
+
+void
 CShape::render(const EngineUtilities::TSharedPointer<Window>& window) {
   if (m_shapePtr) {
     window->draw(*m_shapePtr);
   }
+}
+
+void
+CShape::destroy() {
+  m_shapePtr.reset(); // Reset the shared pointer to release the shape
 }
 
 void 
@@ -65,9 +80,8 @@ CShape::setPosition(float x, float y) {
   }
 }
 
-/*
 void
-CShape::setPosition(const sf::Vector2& position) {
+CShape::setPosition(const sf::Vector2f& position) {
   if (m_shapePtr) {
     m_shapePtr->setPosition(position);
   }
@@ -75,7 +89,6 @@ CShape::setPosition(const sf::Vector2& position) {
     ERROR("CShape", "setPosition", "Shape is not initialized");
   }
 }
-*/
 
 /*
 void

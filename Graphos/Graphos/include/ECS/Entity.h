@@ -2,7 +2,8 @@
 #include "../Prerequisites.h"
 #include "Component.h"
 
-class Window;
+class 
+Window;
 
 /*
  * @class Entity
@@ -68,7 +69,8 @@ public:
   template<typename T> 
 	void
 	addComponent(EngineUtilities::TSharedPointer<T> component) {
-		static_assert(std::is_base_of<Component, T>::value, "T must be derived from Component");
+		static_assert(std::is_base_of<Component, T>::value, 
+									"T must be derived from Component");
 		components.push_back(component.template dynamic_pointer_cast<Component>());
   }
 
@@ -81,7 +83,8 @@ public:
 	EngineUtilities::TSharedPointer<T>
 	getComponent() {
 		for (auto& component : components) {
-      EngineUtilities::TSharedPointer<T> specificComponent = component.template dynamic_pointer_cast<T>();
+      EngineUtilities::TSharedPointer<T> specificComponent = 
+																				 component.template dynamic_pointer_cast<T>();
 			if (specificComponent) {
 				return specificComponent;
 			}
@@ -93,11 +96,11 @@ protected:
 	/*
    *  @brief Indicates whether the entity is active.
 	*/
-	bool isActive;
+	bool isActive = true;
 	/*
    *  @brief Unique identifier for the entity.
 	*/
-	uint32_t id;
+	uint32_t id = 0;
 	/*
    *  @brief List of components attached to the entity.
 	*/

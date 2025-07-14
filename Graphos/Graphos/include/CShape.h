@@ -7,7 +7,8 @@
  * @brief Encapsulates an SFML RenderWindow for rendering and window management.
  * The Window class is a forward declaration for the main application window
  */
-class Window;
+class 
+Window;
 
 /**
 * @class CShape
@@ -57,6 +58,12 @@ public:
   void
   createShape(ShapeType shapeType);
 
+  /*
+    *  @brief Starts the component. Called once when the component is initialized.
+  */
+  void
+  start() override;
+
   /**
   * @brief Updates the shape's state.
   * This function updates the internal state of the shape, such as animations or transformations,
@@ -74,7 +81,13 @@ public:
   * @param window Reference to the Window object where the shape will be rendered.
   */
   void 
-  render(const EngineUtilities::TSharedPointer<Window>& window);
+  render(const EngineUtilities::TSharedPointer<Window>& window) override;
+
+  /*
+    *  @brief Destroys the component and releases resources.
+  */
+  void
+  destroy() override;
 
   /**
   * @brief Sets the position of the shape.

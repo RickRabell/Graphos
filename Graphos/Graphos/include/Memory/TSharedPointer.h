@@ -1,4 +1,4 @@
-/*
+ï»¿/*
  * MIT License
  *
  * Copyright (c) 2024 Roberto Charreton
@@ -30,11 +30,11 @@
 
 namespace EngineUtilities {
 	/**
-	 * @brief Clase TSharedPointer para manejar la gestión de memoria compartida.
+	 * @brief Clase TSharedPointer para manejar la gestiï¿½n de memoria compartida.
 	 *
 	 * La clase TSharedPointer gestiona la memoria de un objeto de tipo T y lleva un
-	 * recuento de referencias para permitir la compartición segura de un mismo objeto
-	 * en múltiples instancias de TSharedPointer.
+	 * recuento de referencias para permitir la comparticiï¿½n segura de un mismo objeto
+	 * en mï¿½ltiples instancias de TSharedPointer.
 	 */
 	template<typename T>
 	class TSharedPointer
@@ -99,7 +99,7 @@ namespace EngineUtilities {
 		}
 
 		/**
-		 * @brief Operador de asignación de copia.
+		 * @brief Operador de asignaciï¿½n de copia.
 		 *
 		 * Libera el objeto actual, copia el puntero y el recuento de referencias del otro
 		 * TSharedPointer, y aumenta el recuento de referencias.
@@ -129,7 +129,7 @@ namespace EngineUtilities {
 		}
 
 		/**
-		 * @brief Operador de asignación de movimiento.
+		 * @brief Operador de asignaciï¿½n de movimiento.
 		 *
 		 * Libera el objeto actual, transfiere la propiedad del puntero y el recuento de
 		 * referencias del otro TSharedPointer al actual.
@@ -156,11 +156,11 @@ namespace EngineUtilities {
 			return *this;
 		}
 
-    template<typename U>
-		TSharedPointer(const TSharedPointer<U>& other) 
+		template<typename U>
+		TSharedPointer(const TSharedPointer<U>& other)
 			: ptr(other.ptr), refCount(other.refCount) {
-      if (refCount) ++(*refCount);
-    }
+			if (refCount) ++(*refCount);
+		}
 
 		/**
 		 * @brief Destructor.
@@ -178,7 +178,7 @@ namespace EngineUtilities {
 		}
 
 		/**
-		 * @brief Operador de desreferenciación.
+		 * @brief Operador de desreferenciaciï¿½n.
 		 *
 		 * @return Referencia al objeto gestionado.
 		 */
@@ -191,9 +191,9 @@ namespace EngineUtilities {
 		 */
 		T* operator->() const { return ptr; }
 
-		//Agregar una función para comprobar si el puntero es válido
+		// Agregar una funciï¿½n para comprobar si el puntero es vï¿½lido
 		operator bool() const {
-      return ptr != nullptr;
+			return ptr != nullptr;
 		}
 
 		/**
@@ -215,7 +215,7 @@ namespace EngineUtilities {
 		int* refCount; ///< Puntero al recuento de referencias.
 
 		/**
-		 * @brief Método swap.
+		 * @brief Mï¿½todo swap.
 		 *
 		 * Intercambia los datos de dos objetos TSharedPointer.
 		 *
@@ -237,7 +237,7 @@ namespace EngineUtilities {
 				 * @brief Libera el objeto actual y opcionalmente asigna un nuevo objeto.
 				 *
 				 * @param newPtr Nuevo puntero crudo al objeto que se va a gestionar (por defecto es nullptr).
-		*/
+				 */
 		void reset(T* newPtr = nullptr)
 		{
 			// Disminuir el recuento de referencias del objeto actual
@@ -261,26 +261,25 @@ namespace EngineUtilities {
 			}
 		}
 
-        /*
-        *  @brief Conversion method for dynamic cast.
-        */
-        template<typename U>
-        TSharedPointer<U> dynamic_pointer_cast() const {
-					// Intenta convertir el puntero de tipo T a tipo U
-					U* castedPtr = dynamic_cast<U*>(ptr);
-					if (castedPtr) {
-						// Si la conversión es exitosa, crea un nuevo TSharedPointer<U>
-						return TSharedPointer<U>(castedPtr, refCount);
-					} 
-					else {
-						//Si falla, devuelve un TSharedPointer<U> nulo
-						return TSharedPointer<U>();
-					}
-        }
+		// Mï¿½todo de conversiï¿½n para hacer cast dinï¿½mico
+		template<typename U>
+		TSharedPointer<U> dynamic_pointer_cast() const {
+			// Intenta convertir el puntero de tipo T a U
+			U* castedPtr = dynamic_cast<U*>(ptr);
+			if (castedPtr) {
+				// Si la conversiï¿½n es exitosa, devuelve un nuevo TSharedPointer<U>
+				return TSharedPointer<U>(castedPtr, refCount);
+			}
+			else {
+				// Si falla la conversiï¿½n, devuelve un TSharedPointer<U> nulo
+				return TSharedPointer<U>();
+			}
+		}
+
 	};
 
 	/**
-	 * @brief Función de utilidad para crear un TSharedPointer.
+	 * @brief Funciï¿½n de utilidad para crear un TSharedPointer.
 	 *
 	 * @tparam T Tipo del objeto gestionado.
 	 * @tparam Args Tipos de los argumentos del constructor del objeto gestionado.
@@ -292,4 +291,5 @@ namespace EngineUtilities {
 	{
 		return TSharedPointer<T>(new T(args...));
 	}
+
 }

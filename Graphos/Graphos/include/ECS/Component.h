@@ -1,6 +1,8 @@
 #pragma once
 #include "../Prerequisites.h"
-class Window;
+
+class 
+Window;
 
 /**
 * @enum ComponentType
@@ -106,5 +108,5 @@ protected:
   /*
     *  @brief The type of the component.
   */
-  ComponentType m_type; //Tipo de componente
+  ComponentType m_type = ComponentType::NONE; //Tipo de componente
 };

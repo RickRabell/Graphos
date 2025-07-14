@@ -5,7 +5,8 @@
 /*
 	*  @brief Encapsulates an SFML RenderWindow for rendering and window management. It is a forward declaration to avoid circular dependencies.
 */
-class Window;
+class 
+Window;
 
 /*
   *  @class Transform
@@ -26,7 +27,16 @@ public:
   /*
     *  @brief Default constructor for Transform.
   */
-  Transform() = default;
+  //Transform() = default;
+
+  /*
+    *  @brief Constructor for Transform.
+  */
+  Transform() :
+    m_position(0.0f, 0.0f),
+    m_rotation(0.0f, 0.0f),
+    m_scale(1.0f, 1.0f), 
+    Component(ComponentType::TRANSFORM) {}
   
   /*
     *  @brief Virtual destructor for Transform.
