@@ -16,6 +16,7 @@
 #include <Memory\TWeakPointer.h>
 #include <Memory\TStaticPtr.h>
 #include <Memory\TUniquePtr.h>
+#include "Utilities/CVector2.h"
 
 //Imgui - Interfaz de usuario
 

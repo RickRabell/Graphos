@@ -32,12 +32,12 @@ BaseApp::init() {
   //m_circle = new sf::CircleShape(100.0f);
   //m_circle->setFillColor(sf::Color::Green);
   //m_circle->setPosition(200.f, 150.f);
-  m_shapePtr = EngineUtilities::MakeShared<CShape>();
+  /*m_shapePtr = EngineUtilities::MakeShared<CShape>();
   if (m_shapePtr) {
     m_shapePtr->createShape(ShapeType::CIRCLE);
     m_shapePtr->setFillColor(sf::Color::Green);
     m_shapePtr->setPosition(200.f, 150.f);
-  }
+  }*/
 
   // Create Circle Actor
   m_ACircle = EngineUtilities::MakeShared<Actor>("Circle Actor");
@@ -45,6 +45,7 @@ BaseApp::init() {
     m_ACircle->getComponent<CShape>()->createShape(CIRCLE);
     m_ACircle->getComponent<CShape>()->setFillColor(sf::Color::Red);
     m_ACircle->getComponent<Transform>()->setPosition(sf::Vector2(100.f, 150.f));
+    //m_ACircle->setTexture()
     //m_ACircle->setName("CircleActor");
   } 
   /*else {
@@ -59,9 +60,34 @@ BaseApp::init() {
 
 void 
 BaseApp::update() {
-  // Update actors
-  if (!m_ACircle.isNull()) {
-    m_ACircle->update(0);
+  if (!m_windowPtr.isNull()) {
+    m_windowPtr->update();
+  }
+  // Seek
+  // Obtener el componente de Transformación del Actor
+  if (!m_ACircle.isNull() && !m_waypoints.empty()) {
+    m_ACircle->update(m_windowPtr->deltaTime.asSeconds());
+    
+		// Waypoint actual
+		sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex];
+
+    // Posición actual del destino (punto recorrido)
+    //sf::Vector2f targetPos(1200.f, 150.f);
+
+		// Llamar al seek del transform
+		m_ACircle->getComponent<Transform>()->seek(targetPos, 
+                                               200.f, 
+                                               m_windowPtr->deltaTime.asSeconds(), 
+                                               10.0f);
+
+		// Si llegó al waypoint, avanza al siguiente
+		sf::Vector2f pos = m_ACircle->getComponent<Transform>()->getPosition();
+    float dist = std::sqrt((pos.x - targetPos.x) * (pos.x - targetPos.x) +
+			(pos.y - targetPos.y) * (pos.y - targetPos.y));
+
+    if (dist <= 10.0f) {
+      m_currentWaypointIndex = (m_currentWaypointIndex + 1) % m_waypoints.size();
+		}
   }
 }
 
@@ -76,9 +102,9 @@ BaseApp::render() {
     return;
   }
   m_windowPtr->clear();
-  if (m_shapePtr) {
+  /*if (m_shapePtr) {
     m_shapePtr->render(m_windowPtr);
-  }
+  }*/
   /*if (!m_ACircle.isNull()) {
     m_ACircle->getComponent<CShape>()->render(m_windowPtr);
   }*/

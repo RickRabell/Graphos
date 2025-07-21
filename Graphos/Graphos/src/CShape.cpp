@@ -1,5 +1,6 @@
 #include "CShape.h"
 #include "Window.h"
+#include "ECS/Texture.h"
 
 void
 CShape::createShape(ShapeType type) {
@@ -129,5 +130,12 @@ CShape::setScale(const sf::Vector2f& scl) {
   }
   else {
     ERROR("CShape", "setScale", "Shape is not initialized");
+  }
+}
+
+void
+CShape::setTexture(const EngineUtilities::TSharedPointer<Texture>& texture) {
+  if (!texture.isNull()) {
+    m_shapePtr->setTexture(&texture->getTexture());
   }
 }

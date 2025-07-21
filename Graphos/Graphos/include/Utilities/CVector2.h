@@ -158,6 +158,13 @@ public:
 		return *this;
 	}
 
+	CVector2&
+	operator/=(const float other) {
+		m_x /= other;
+		m_y /= other;
+		return *this;
+	}
+
 	/*
 		*  @brief Checks if two vectors are equal.
 		*  @param other The vector to compare.

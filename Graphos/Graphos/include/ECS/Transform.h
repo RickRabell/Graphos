@@ -1,7 +1,9 @@
 #pragma once
 #include "Prerequisites.h"
 #include "SFML/System/Vector2.hpp"
+//#include "../Utilities/CVector2.h"
 #include "ECS/Component.h"
+#include "../Window.h"
 /*
 	*  @brief Encapsulates an SFML RenderWindow for rendering and window management. It is a forward declaration to avoid circular dependencies.
 */
@@ -114,6 +116,18 @@ public:
   */
   void
   setScale(const sf::Vector2f& scale) { m_scale = scale; }
+
+  void
+    seek(const sf::Vector2f& targetPosition, float speed, float deltaTime, float range) {
+    sf::Vector2f direction = targetPosition - m_position;
+    // Cambiar a mi raiz cuadrada
+    float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);
+
+    if (length > range) {
+      direction /= length; // Normalizar el vector de dirección
+      m_position += direction * speed * deltaTime; // Mover la posición en la dirección normalizada
+    }
+  }
 
 private:
   /*

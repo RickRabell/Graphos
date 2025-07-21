@@ -45,11 +45,11 @@ ComponentType {
 };
 
 /**
-* @class Component
-* @brief Abstract base class for all components in the ECS (Entity Component System).
-* 
-* The Component class defines the basic interface that all ECS components must implement,
-* allowing updating and rendering of the component, as well as obtaining its type.
+  * @class Component
+  * @brief Abstract base class for all components in the ECS (Entity Component System).
+  * 
+  * The Component class defines the basic interface that all ECS components must implement,
+  * allowing updating and rendering of the component, as well as obtaining its type.
 */
 class 
 Component {

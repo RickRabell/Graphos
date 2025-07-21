@@ -10,6 +10,9 @@
 class 
 Window;
 
+class
+Texture;
+
 /**
 * @class CShape
 * @brief Encapsulates an SFML shape and provides an interface for shape manipulation and rendering.
@@ -147,6 +150,9 @@ public:
   getShape() {
     return m_shape;
   }*/
+
+  void
+  setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
 
 private:
   /**

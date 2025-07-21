@@ -95,6 +95,9 @@ public:
   void
   display();
 
+  void
+  update();
+
   /**
   * @brief Destroys the window and releases associated resources.
   * This function closes the window and frees any resources allocated for it.
@@ -113,4 +116,8 @@ private:
   //sf::RenderWindow* m_window;
   EngineUtilities::TUniquePtr<sf::RenderWindow> m_windowPtr;
   sf::View m_view;
+
+public:
+  sf::Time deltaTime;
+	sf::Clock clock;
 };

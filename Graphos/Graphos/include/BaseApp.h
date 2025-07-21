@@ -93,7 +93,16 @@ private:
   * @return Pointer to the sf::CircleShape instance managed by the application.
   */
   //sf::CircleShape* m_circle;
-  EngineUtilities::TSharedPointer<CShape> m_shapePtr;
+  //EngineUtilities::TSharedPointer<CShape> m_shapePtr;
 
   EngineUtilities::TSharedPointer<Actor> m_ACircle;
+
+  std::vector<sf::Vector2f> m_waypoints = {
+    sf::Vector2f(800.f, 150.f),
+    sf::Vector2f(800.f, 600.f),
+    sf::Vector2f(200.f, 600.f),
+    sf::Vector2f(200.f, 150.f)
+  };
+
+	int m_currentWaypointIndex = 0; ///< Index of the current waypoint in the path.
 };
