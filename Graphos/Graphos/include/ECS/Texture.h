@@ -8,9 +8,9 @@ public:
 	Texture() = default;
 
 	Texture(const std::string& textureName, const std::string& extension = "png")
-		: m_textureName(textureName), m_eextension(extension), Component(TEXTURE) {
-		if (!m_texture.loadFromFile(m_textureName + "." + m_eextension)) {
-			std::cout << "Error loading texture: " << m_textureName << "." << m_eextension << std::endl;
+		: m_textureName(textureName), m_extension(extension), Component(TEXTURE) {
+		if (!m_texture.loadFromFile(m_textureName + "." + m_extension)) {
+			std::cout << "Error loading texture: " << m_textureName << "." << m_extension << std::endl;
 		}
 	}
 	
@@ -20,11 +20,13 @@ public:
 	void
 	start() override {};
 
+	//
 	void
-	update(float deltaTime) override;
+		update(float deltaTime) override {};
 
+	//
 	void
-	render(const EngineUtilities::TSharedPointer<Window>& window) override;
+		render(const EngineUtilities::TSharedPointer<Window>& window) override {};
 
 	void
 	destroy() override{};
@@ -37,5 +39,5 @@ public:
 private:
 	sf::Texture m_texture;
 	std::string m_textureName;
-	std::string m_eextension;
+	std::string m_extension;
 };

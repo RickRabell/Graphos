@@ -1,4 +1,5 @@
 #include <BaseApp.h>
+#include "ResourceManager.h"
 
 BaseApp::~BaseApp() {
 }
@@ -21,6 +22,8 @@ BaseApp::run() {
 
 bool 
 BaseApp::init() {
+	ResourceManager& resourceMan = ResourceManager::getInstance();
+
   m_windowPtr = EngineUtilities::MakeShared<Window>(1920, 1080, "Graphos");
   if (!m_windowPtr) {
     ERROR("BaseApp", 
@@ -45,6 +48,13 @@ BaseApp::init() {
     m_ACircle->getComponent<CShape>()->createShape(CIRCLE);
     m_ACircle->getComponent<CShape>()->setFillColor(sf::Color::Red);
     m_ACircle->getComponent<Transform>()->setPosition(sf::Vector2(100.f, 150.f));
+
+    if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
+      MESSAGE("BaseApp", 
+              "init", 
+				      "Can't load the Texture");
+    }
+		m_ACircle->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
     //m_ACircle->setTexture()
     //m_ACircle->setName("CircleActor");
   } 
