@@ -76,7 +76,7 @@ public:
   * @param deltaTime The time elapsed since the last update, in seconds.
   */
   void
-  update(float deltaTime);
+  update(float deltaTime) override;
 
   /**
   * @brief Renders the shape to the specified window.

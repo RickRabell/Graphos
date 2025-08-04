@@ -1,6 +1,8 @@
 #pragma once
 #include "Prerequisites.h"
 
+class EngineGUI;
+
 /**
 * @class Window
 * @brief Encapsulates an SFML RenderWindow for rendering and window management.
@@ -53,7 +55,7 @@ public:
   * window resizing, and close events. It should be called once per frame in the main loop.
   */
 	void
-  handleEvents();
+  handleEvents(EngineGUI& engineGUI);
 
   /**
   * @brief Checks if the window is currently open.
@@ -98,6 +100,9 @@ public:
   void
   update();
 
+  void
+  render();
+
   /**
   * @brief Destroys the window and releases associated resources.
   * This function closes the window and frees any resources allocated for it.
@@ -114,10 +119,11 @@ private:
   * be accessed directly by users of the class.
   */
   //sf::RenderWindow* m_window;
-  EngineUtilities::TUniquePtr<sf::RenderWindow> m_windowPtr;
+  //EngineUtilities::TUniquePtr<sf::RenderWindow> m_windowPtr;
   sf::View m_view;
 
 public:
+  EngineUtilities::TUniquePtr<sf::RenderWindow> m_windowPtr;
   sf::Time deltaTime;
 	sf::Clock clock;
 };

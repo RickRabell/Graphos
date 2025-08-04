@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "CShape.h"
 #include "ECS/Actor.h"
+#include "EngineGUI.h"
 
 /**
 * @class BaseApp
@@ -98,11 +99,25 @@ private:
   EngineUtilities::TSharedPointer<Actor> m_ACircle;
 
   std::vector<sf::Vector2f> m_waypoints = {
-    sf::Vector2f(800.f, 150.f),
-    sf::Vector2f(800.f, 600.f),
-    sf::Vector2f(200.f, 600.f),
-    sf::Vector2f(200.f, 150.f)
+    sf::Vector2f(75.f, 85.f),
+    sf::Vector2f(1300.f, 85.f),
+    sf::Vector2f(1300.f, 462.f),
+    sf::Vector2f(540.f, 462.f),
+    sf::Vector2f(540.f, 683.f),
+    sf::Vector2f(1675.f, 683.f),
+    sf::Vector2f(1675.f, 947.f),
+    sf::Vector2f(820.f, 947.f),
+    sf::Vector2f(790.f, 905.f),
+    sf::Vector2f(400.f, 905.f),
+    sf::Vector2f(380.f, 947.f),
+    sf::Vector2f(75.f, 947.f)
   };
 
 	int m_currentWaypointIndex = 0; ///< Index of the current waypoint in the path.
+
+  EngineUtilities::TSharedPointer<Actor> m_track;
+
+  //EngineUtilities::TSharedPointer<Actor> m_checks;
+
+	EngineGUI m_engineGUI;
 };

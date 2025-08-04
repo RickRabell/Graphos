@@ -118,7 +118,7 @@ public:
   setScale(const sf::Vector2f& scale) { m_scale = scale; }
 
   void
-    seek(const sf::Vector2f& targetPosition, float speed, float deltaTime, float range) {
+  seek(const sf::Vector2f& targetPosition, float speed, float deltaTime, float range) {
     sf::Vector2f direction = targetPosition - m_position;
     // Cambiar a mi raiz cuadrada
     float length = std::sqrt(direction.x * direction.x + direction.y * direction.y);

@@ -1,4 +1,4 @@
-#include <BaseApp.h>
+#include "BaseApp.h"
 #include "ResourceManager.h"
 
 BaseApp::~BaseApp() {
@@ -12,7 +12,7 @@ BaseApp::run() {
           "Initializes result on a false statement, check method validations");
   }
   while (m_windowPtr->isOpen()) {
-    m_windowPtr->handleEvents();
+    m_windowPtr->handleEvents(m_engineGUI);
     update();
     render();
   }
@@ -31,6 +31,9 @@ BaseApp::init() {
            "Failed to create window pointer, check memory allocation");
     return false;
   }
+
+  // Initialize the Engine GUI
+  m_engineGUI.init(m_windowPtr);
   //m_window = new Window(1920, 1080, "Graphos");
   //m_circle = new sf::CircleShape(100.0f);
   //m_circle->setFillColor(sf::Color::Green);
@@ -46,8 +49,9 @@ BaseApp::init() {
   m_ACircle = EngineUtilities::MakeShared<Actor>("Circle Actor");
   if (m_ACircle) {
     m_ACircle->getComponent<CShape>()->createShape(CIRCLE);
-    m_ACircle->getComponent<CShape>()->setFillColor(sf::Color::Red);
-    m_ACircle->getComponent<Transform>()->setPosition(sf::Vector2(100.f, 150.f));
+    m_ACircle->getComponent<CShape>()->setFillColor(sf::Color::White);
+    m_ACircle->getComponent<Transform>()->setPosition(sf::Vector2(75.f, 85.f));
+    m_ACircle->getComponent<Transform>()->setScale(sf::Vector2(3.f, 3.f));
 
     if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
       MESSAGE("BaseApp", 
@@ -58,12 +62,38 @@ BaseApp::init() {
     //m_ACircle->setTexture()
     //m_ACircle->setName("CircleActor");
   } 
-  /*else {
+
+  // Create Track
+  m_track = EngineUtilities::MakeShared<Actor>("Track Actor");
+  if (m_track) {
+    
+    m_track->getComponent<CShape>()->createShape(RECTANGLE);
+    m_track->getComponent<CShape>()->setFillColor(sf::Color::Cyan);
+    m_track->getComponent<Transform>()->setPosition(sf::Vector2(0.f, 0.f));
+    m_track->getComponent<Transform>()->setScale(sf::Vector2(23.f, 21.5f));
+
+    if (!resourceMan.loadTexture("Sprites/Rainbow_Track", "png")) {
+      MESSAGE("BaseApp",
+              "init",
+              "Can't load the Texture");
+    }
+    m_track->setTexture(resourceMan.getTexture("Sprites/Rainbow_Track"));
+  }
+  /*
+  m_checks = EngineUtilities::MakeShared<Actor>("Track Actor");
+  if (m_checks) {
+    
+    m_checks->getComponent<CShape>()->createShape(CIRCLE);
+    m_checks->getComponent<CShape>()->setFillColor(sf::Color::Red);
+    m_checks->getComponent<Transform>()->setPosition(sf::Vector2(400.f, 900.f));
+    m_checks->getComponent<Transform>()->setScale(sf::Vector2(0.5f, 0.5f));
+  }*/
+  else {
     ERROR("BaseApp", 
           "init", 
           "Failed to create Actor pointer, check memory allocation");
     return false;
-  }*/
+  }
 
   return true;
 }
@@ -73,10 +103,22 @@ BaseApp::update() {
   if (!m_windowPtr.isNull()) {
     m_windowPtr->update();
   }
+
+	// Actualizar el GUI del Engine
+	m_engineGUI.update(m_windowPtr, m_windowPtr->deltaTime);
+
   // Seek
   // Obtener el componente de Transformación del Actor
   if (!m_ACircle.isNull() && !m_waypoints.empty()) {
     m_ACircle->update(m_windowPtr->deltaTime.asSeconds());
+
+    if (!m_track.isNull()) {
+      m_track->update(m_windowPtr->deltaTime.asSeconds());
+    }
+
+    /*if (!m_checks.isNull()) {
+      m_checks->update(m_windowPtr->deltaTime.asSeconds());
+    }*/
     
 		// Waypoint actual
 		sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex];
@@ -118,15 +160,27 @@ BaseApp::render() {
   /*if (!m_ACircle.isNull()) {
     m_ACircle->getComponent<CShape>()->render(m_windowPtr);
   }*/
-  if (m_ACircle) {
-    m_ACircle->render(m_windowPtr);
+  if (!m_track.isNull()) {
+    m_track->getComponent<CShape>()->render(m_windowPtr);
+  }
+
+  /*if (!m_checks.isNull()) {
+    m_checks->getComponent<CShape>()->render(m_windowPtr);
+  }*/
+  
+  if (!m_ACircle.isNull()) {
+    //m_ACircle->render(m_windowPtr);
+    m_ACircle->getComponent<CShape>()->render(m_windowPtr);
 	}
 
+  m_windowPtr->render();
   m_windowPtr->display();
 }
 
 void 
 BaseApp::destroy() {
+  // Destroy ImGui
+	m_engineGUI.destroy();
   //delete m_circle;
   //m_window->destroy();
 }

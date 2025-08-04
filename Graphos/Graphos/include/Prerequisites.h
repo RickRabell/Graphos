@@ -19,7 +19,8 @@
 #include "Utilities/CVector2.h"
 
 //Imgui - Interfaz de usuario
-
+#include <imgui.h>
+#include <imgui-SFML.h>
 
 // MACRO for safe release of resources
 /**
