@@ -86,3 +86,11 @@ ShapeType
   TRIANGLE = 3,  /**< Triangle shape. */
   POLYGON = 4    /**< Polygon shape. */
 };
+
+enum
+ConsolErrorType
+{
+	INFO = 0,      /**< Informational message. */
+	WARNING = 1,   /**< Warning message indicating a potential issue. */
+	ERROR = 2,     /**< Error message indicating a failure or critical issue. */
+};

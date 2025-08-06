@@ -80,6 +80,8 @@ public:
   destroy();
 
 private:
+
+	std::vector<EngineUtilities::TSharedPointer<Actor>> m_actors; ///< List of actors managed by the application.
   /**
   * @brief Gets the pointer to the main application window.
   *

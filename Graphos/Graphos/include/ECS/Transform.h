@@ -129,6 +129,21 @@ public:
     }
   }
 
+  float*
+  getPosData() {
+		return &m_position.x; // Retorna un puntero al primer elemento del vector de posición
+  }
+
+	float*
+  getRotData() {
+    return &m_rotation.x; // Retorna un puntero al primer elemento del vector de rotación
+	}
+
+	float*
+  getScaleData() {
+		return &m_scale.x; // Retorna un puntero al primer elemento del vector de escala
+  }
+
 private:
   /*
     *  @brief Position of the Transform component.

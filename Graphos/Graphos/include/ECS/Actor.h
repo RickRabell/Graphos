@@ -70,6 +70,11 @@ public:
 	void
 	setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
 
+	std::string
+	getName() {
+		return m_name;
+	}
+
   /*
 		*  @brief Retrieves a component of type T attached to the actor.
 		*  @tparam T Type of the component to retrieve.

@@ -59,6 +59,8 @@ BaseApp::init() {
 				      "Can't load the Texture");
     }
 		m_ACircle->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
+
+		m_actors.push_back(m_ACircle);
     //m_ACircle->setTexture()
     //m_ACircle->setName("CircleActor");
   } 
@@ -78,6 +80,8 @@ BaseApp::init() {
               "Can't load the Texture");
     }
     m_track->setTexture(resourceMan.getTexture("Sprites/Rainbow_Track"));
+    
+		m_actors.push_back(m_track);
   }
   /*
   m_checks = EngineUtilities::MakeShared<Actor>("Track Actor");
@@ -106,6 +110,10 @@ BaseApp::update() {
 
 	// Actualizar el GUI del Engine
 	m_engineGUI.update(m_windowPtr, m_windowPtr->deltaTime);
+	m_engineGUI.outliner(m_actors);
+	m_engineGUI.inspector(m_actors);
+	ImGui::ShowDemoWindow();
+  
 
   // Seek
   // Obtener el componente de Transformación del Actor
@@ -174,6 +182,9 @@ BaseApp::render() {
 	}
 
   m_windowPtr->render();
+
+	m_engineGUI.render(m_windowPtr);
+
   m_windowPtr->display();
 }
 
