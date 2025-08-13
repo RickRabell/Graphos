@@ -1,8 +1,9 @@
 #pragma once
 #include "Prerequisites.h"
+#include "ECS/Actor.h"
 
 class Window;
-class Actor;
+//class Actor;
 
 class 
 EngineGUI {

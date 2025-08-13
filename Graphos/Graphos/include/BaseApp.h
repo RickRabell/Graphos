@@ -4,6 +4,7 @@
 #include "CShape.h"
 #include "ECS/Actor.h"
 #include "EngineGUI.h"
+#include <vector>
 
 /**
 * @class BaseApp
@@ -79,6 +80,9 @@ public:
   void
   destroy();
 
+  void
+	renderTimer();
+
 private:
 
 	std::vector<EngineUtilities::TSharedPointer<Actor>> m_actors; ///< List of actors managed by the application.
@@ -100,20 +104,9 @@ private:
 
   EngineUtilities::TSharedPointer<Actor> m_ACircle;
 
-  std::vector<sf::Vector2f> m_waypoints = {
-    sf::Vector2f(75.f, 85.f),
-    sf::Vector2f(1300.f, 85.f),
-    sf::Vector2f(1300.f, 462.f),
-    sf::Vector2f(540.f, 462.f),
-    sf::Vector2f(540.f, 683.f),
-    sf::Vector2f(1675.f, 683.f),
-    sf::Vector2f(1675.f, 947.f),
-    sf::Vector2f(820.f, 947.f),
-    sf::Vector2f(790.f, 905.f),
-    sf::Vector2f(400.f, 905.f),
-    sf::Vector2f(380.f, 947.f),
-    sf::Vector2f(75.f, 947.f)
-  };
+  std::vector<sf::Vector2f> m_waypoints;
+
+	std::vector<EngineUtilities::TSharedPointer<CShape>> m_path; ///< List of waypoints forming the path.
 
 	int m_currentWaypointIndex = 0; ///< Index of the current waypoint in the path.
 
@@ -122,4 +115,6 @@ private:
   //EngineUtilities::TSharedPointer<Actor> m_checks;
 
 	EngineGUI m_engineGUI;
+
+  sf::Clock m_appTimer;
 };

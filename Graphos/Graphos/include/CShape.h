@@ -44,6 +44,8 @@ public:
                                 m_shapeType(ShapeType::EMPTY),
                                 Component(ComponentType::SHAPE)  { }
 
+  //CShape(ShapeType shapeType);
+
   /**
   * @brief Default destructor for the CShape class.
   * Destroys the CShape object and releases any associated resources.

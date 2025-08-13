@@ -28,6 +28,8 @@
     <ClCompile Include="src\BaseApp.cpp" />
     <ClCompile Include="src\CShape.cpp" />
     <ClCompile Include="src\ECS\Actor.cpp" />
+    <ClCompile Include="src\ECS\A_Player.cpp" />
+    <ClCompile Include="src\ECS\A_Racer.cpp" />
     <ClCompile Include="src\EngineGUI.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
@@ -47,6 +49,8 @@
     <ClInclude Include="include\BaseApp.h" />
     <ClInclude Include="include\CShape.h" />
     <ClInclude Include="include\ECS\Actor.h" />
+    <ClInclude Include="include\ECS\A_Player.h" />
+    <ClInclude Include="include\ECS\A_Racer.h" />
     <ClInclude Include="include\ECS\Component.h" />
     <ClInclude Include="include\ECS\Entity.h" />
     <ClInclude Include="include\ECS\Texture.h" />
