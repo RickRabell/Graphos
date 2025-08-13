@@ -2,6 +2,8 @@
 #include "ResourceManager.h"
 #include "EngineGUI.h"
 #include "ECS/A_Racer.h"
+#include "ECS/A_Player.h"
+#include <algorithm>
 
 BaseApp::~BaseApp() {
 }
@@ -99,6 +101,45 @@ BaseApp::init() {
 
   // ------------------------------------------------------------------------------------------------
 
+  auto player = EngineUtilities::MakeShared<A_Player>("Player", 0);
+  if (player) {
+    player->m_waypoints = m_waypoints; // Asigna los waypoints al jugador
+    player->getComponent<CShape>()->createShape(CIRCLE);
+    player->getComponent<CShape>()->setFillColor(sf::Color::Red); // Color diferente para distinguirlo
+    player->getComponent<Transform>()->setPosition(m_waypoints[0]);
+    player->getComponent<Transform>()->setScale(sf::Vector2f(3.0f, 3.0f));
+    player->setTotalLaps(3); // O el número de vueltas que desees
+
+    // Asigna textura si tienes una específica para el jugador
+    if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
+      MESSAGE("BaseApp", "init", "Can't load the Player Texture");
+    }
+    else {
+      player->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
+    }
+
+    m_actors.push_back(player);
+  }
+
+  // --- Crear un Racer IA como ejemplo ---
+  auto IA_01 = EngineUtilities::MakeShared<A_Racer>("IA 01", 0);
+  if (IA_01) {
+    IA_01->setWayPoints(m_waypoints);
+    IA_01->getComponent<CShape>()->createShape(CIRCLE);
+    IA_01->getComponent<CShape>()->setFillColor(sf::Color::Blue);
+    IA_01->getComponent<Transform>()->setPosition(m_waypoints[0]);
+    IA_01->getComponent<Transform>()->setScale(sf::Vector2f(3.0f, 3.0f));
+    IA_01->setSpeed(200.f);
+
+    if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
+      MESSAGE("BaseApp", "init", "Can't load the Texture");
+    }
+    IA_01->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
+
+    m_actors.push_back(IA_01);
+  }
+	// ------------------------------------------------------------------------------------------------
+
   // Create Circle Actor
   m_ACircle = EngineUtilities::MakeShared<Actor>("Circle Actor");
   if (m_ACircle) {
@@ -151,6 +192,28 @@ BaseApp::init() {
     return false;
   }
 
+  // --- Crear el jugador controlable ---
+  m_player = EngineUtilities::MakeShared<A_Player>("Player", 0); // Guardamos directamente en m_player
+  if (m_player) {
+      m_player->m_waypoints = m_waypoints; 
+      m_player->getComponent<CShape>()->createShape(CIRCLE);
+      m_player->getComponent<CShape>()->setFillColor(sf::Color::Red); 
+      m_player->getComponent<Transform>()->setPosition(m_waypoints[0]); // Asegura posición visible
+      m_player->getComponent<Transform>()->setScale(sf::Vector2f(3.0f, 3.0f));
+      m_player->setTotalLaps(3);
+
+      if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
+          MESSAGE("BaseApp", "init", "Can't load the Player Texture");
+      } else {
+          m_player->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
+      }
+
+      m_actors.push_back(m_player);
+  } else {
+      ERROR("BaseApp", "init", "Failed to create Player pointer");
+      return false;
+  }
+
   return true;
 }
 
@@ -179,61 +242,7 @@ BaseApp::update() {
     }
 	}
 
-  if(!m_waypoints.empty()) {
-		sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex];
-		sf::Vector2f pos = m_ACircle->getComponent<Transform>()->getPosition();
-
-		float dx = targetPos.x - pos.x;
-		float dy = targetPos.y - pos.y;
-		float distance = std::sqrt(dx * dx + dy * dy);
-
-    if (distance < 10.0f) { // Si no ha llegado al waypoint
-      m_currentWaypointIndex++;
-      if (m_currentWaypointIndex >= static_cast<int>(m_waypoints.size())) {
-        m_currentWaypointIndex = 0; // Reiniciar al primer waypoint
-			}
-    }
-
-    m_ACircle->getComponent<Transform>()->seek(targetPos, 
-                                               200.f, 
-                                               m_windowPtr->deltaTime.asSeconds(), 
-			                                         10.0f, 75.0f);
-	}
-
-  // Seek
-  // Obtener el componente de Transformación del Actor
-  /*if (!m_ACircle.isNull() && !m_waypoints.empty()) {
-    m_ACircle->update(m_windowPtr->deltaTime.asSeconds());
-
-    if (!m_track.isNull()) {
-      m_track->update(m_windowPtr->deltaTime.asSeconds());
-    }
-
-    /*if (!m_checks.isNull()) {
-      m_checks->update(m_windowPtr->deltaTime.asSeconds());
-    }//
-    
-		// Waypoint actual
-		sf::Vector2f targetPos = m_waypoints[m_currentWaypointIndex];
-
-    // Posición actual del destino (punto recorrido)
-    //sf::Vector2f targetPos(1200.f, 150.f);
-
-		// Llamar al seek del transform
-		m_ACircle->getComponent<Transform>()->seek(targetPos, 
-                                               200.f, 
-                                               m_windowPtr->deltaTime.asSeconds(), 
-                                               10.0f);
-
-		// Si llegó al waypoint, avanza al siguiente
-		sf::Vector2f pos = m_ACircle->getComponent<Transform>()->getPosition();
-    float dist = std::sqrt((pos.x - targetPos.x) * (pos.x - targetPos.x) +
-			(pos.y - targetPos.y) * (pos.y - targetPos.y));
-
-    if (dist <= 10.0f) {
-      m_currentWaypointIndex = (m_currentWaypointIndex + 1) % m_waypoints.size();
-		}
-  }*/
+  updatePodium();
 }
 
 void 
@@ -279,6 +288,17 @@ BaseApp::render() {
 
   m_windowPtr->render();
 
+  renderTimer();
+  
+  // Usar un actor válido para la ventana de Laps
+  if (!m_player.isNull()) {
+      renderLapsWindow(m_player);
+  } else if (!m_actors.empty() && !m_actors[0].isNull()) {
+      renderLapsWindow(m_actors[0]);
+  }
+  
+  renderPodiumWindow();
+
   m_engineGUI.render(m_windowPtr);
 
   m_windowPtr->display();
@@ -321,47 +341,83 @@ BaseApp::renderTimer() {
     
     ImGui::End();
 }
-/*
-void
-BaseApp::renderTimer() {
-  // Get the elapsed time
-  sf::Time elapsed = m_appTimer.getElapsedTime();
 
-  // Calculate minutes, seconds, and milliseconds
-  int minutes = static_cast<int>(elapsed.asSeconds()) / 60;
-  int seconds = static_cast<int>(elapsed.asSeconds()) % 60;
-  int milliseconds = static_cast<int>(elapsed.asMilliseconds()) % 1000;
+void BaseApp::updatePodium() {
+    // Filtrar actores nulos antes de ordenar
+    std::vector<EngineUtilities::TSharedPointer<Actor>> validActors;
+    for (const auto& actor : m_actors) {
+        if (!actor.isNull()) {
+            validActors.push_back(actor);
+        }
+    }
+    
+    // Ordenar por criterios (vueltas, waypoint actual, distancia)
+    std::sort(validActors.begin(), validActors.end(), [this](const auto& a, const auto& b) {
+        // Criterio 1: Número de vueltas (más vueltas = mejor posición)
+        if (a->getLaps() != b->getLaps())
+            return a->getLaps() > b->getLaps();
+            
+        // Criterio 2: Índice de waypoint actual (waypoint más avanzado = mejor posición)
+        if (a->m_currentWaypointIndex != b->m_currentWaypointIndex)
+            return a->m_currentWaypointIndex > b->m_currentWaypointIndex;
+            
+        // Criterio 3: Distancia al siguiente waypoint (más cerca = mejor posición)
+        if (!m_waypoints.empty() && a->m_waypoints.size() > 0 && b->m_waypoints.size() > 0) {
+            auto aPos = a->getComponent<Transform>()->getPosition();
+            auto bPos = b->getComponent<Transform>()->getPosition();
+            
+            // Calcular índice del siguiente waypoint de forma segura
+            int aNextIdx = (a->m_currentWaypointIndex + 1) % a->m_waypoints.size();
+            int bNextIdx = (b->m_currentWaypointIndex + 1) % b->m_waypoints.size();
+            
+            auto aNext = a->m_waypoints[aNextIdx];
+            auto bNext = b->m_waypoints[bNextIdx];
+            
+            float aDist = std::sqrt((aPos.x - aNext.x)*(aPos.x - aNext.x) + 
+                                    (aPos.y - aNext.y)*(aPos.y - aNext.y));
+            float bDist = std::sqrt((bPos.x - bNext.x)*(bPos.x - bNext.x) + 
+                                    (bPos.y - bNext.y)*(bPos.y - bNext.y));
+                                    
+            return aDist < bDist;
+        }
+        
+        // En caso de no poder comparar, mantener el orden actual
+        return false;
+    });
+    
+    // Asignar lugares usando los actores válidos ordenados
+    for (size_t i = 0; i < validActors.size(); ++i) {
+        validActors[i]->setPlace(static_cast<int>(i) + 1);
+    }
+}
 
-  // Create a formatted string for the timer
-  char timeStr[32];
-  std::sprintf(timeStr, "%02d:%02d:%03d", minutes, seconds, milliseconds);
+void BaseApp::renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor) {
+    if (!actor) return; // <-- Evita acceso nulo
+    ImGui::Begin("LAPS");
+    ImGui::SetWindowSize(ImVec2(700, 100), ImGuiCond_FirstUseEver);
 
-  /* Set window flags for positioning
-  ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoMove |
-    ImGuiWindowFlags_NoResize |
-    ImGuiWindowFlags_NoCollapse |
-    ImGuiWindowFlags_AlwaysAutoResize;*
+    int currentLap = actor->getLaps();
+    int totalLaps = actor->getTotalLaps();
+    ImGui::Text("%d / %d", currentLap, totalLaps);
 
-  // Calculate position for upper right corner (with 10px padding)
-  ImVec2 windowSize(200, 100);
-  ImVec2 windowPos(ImGui::GetIO().DisplaySize.x - windowSize.x - 10, 10);
+    ImGui::End();
+}
 
-  // Set the window position before creating it
-  ImGui::SetNextWindowPos(windowPos, ImGuiCond_Always);
-  ImGui::SetNextWindowSize(windowSize, ImGuiCond_FirstUseEver);
+void BaseApp::renderPodiumWindow() {
+    ImGui::Begin("PODIUM");
+    ImGui::SetWindowSize(ImVec2(300, 400), ImGuiCond_FirstUseEver);
 
-  // Display the timer with ImGui
-  ImGui::Begin("TIME");
+    for (const auto& actor : m_actors) {
+        if (!actor) continue; // <-- Evita actores nulos
+        ImGui::Text("%d° : %s", actor->getPlace(), actor->getName().c_str());
+        // Si tienes el sprite, puedes mostrarlo con ImGui::Image
+        // Ejemplo:
+        // if (auto shape = actor->getComponent<CShape>()) {
+        //     auto& texture = shape->getTexture();
+        //     ImGui::Image(texture, ImVec2(32, 32));
+        // }
+    }
 
-  // Make the text larger and centered
-  ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Use default font
-  float windowWidth = ImGui::GetWindowSize().x;
-  float textWidth = ImGui::CalcTextSize(timeStr).x;
-  ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-
-  ImGui::Text("%s", timeStr);
-  ImGui::PopFont();
-
-  ImGui::End();
-}*/
+    ImGui::End();
+}
 

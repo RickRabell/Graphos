@@ -22,13 +22,13 @@ public:
 	resetPos();
 
 private:
-	int m_place;
-	float m_speed = 200.0f;
-	float m_maxSpeed = 250.0f;
+	//int m_place;
+	//float m_speed = 200.0f;
+	//float m_maxSpeed = 250.0f;
 	float m_steeringForce = 10.0f;
-	std::vector<sf::Vector2f> m_waypoints;
-	int m_initialPosIndex = 0;
-	int m_currentWaypointIndex = 0;
+	//std::vector<sf::Vector2f> m_waypoints;
+	//int m_initialPosIndex = 0;
+	//int m_currentWaypointIndex = 0;
 
 	// --- Variables para ajustar jugabilidad ---
 	float m_minApproachSpeed = 50.0f;

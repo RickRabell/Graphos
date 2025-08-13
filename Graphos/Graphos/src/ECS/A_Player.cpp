@@ -3,6 +3,7 @@
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/System/Vector2.hpp>
 #include <cmath>
+#include <limits>
 
 A_Player::A_Player(const std::string& name, int initialPos)
   : Actor(name) {}
@@ -29,5 +30,32 @@ void A_Player::HandleInput(float deltaTime) {
             movement /= length; // Normalize
         }
         getComponent<Transform>()->setPosition(getComponent<Transform>()->getPosition() + movement * moveSpeed * deltaTime);
+    }
+
+    // Calcula el waypoint más cercano
+    if (!m_waypoints.empty()) {
+        sf::Vector2f pos = getComponent<Transform>()->getPosition();
+        float minDist = std::numeric_limits<float>::max();
+        int closestIdx = 0;
+        for (size_t i = 0; i < m_waypoints.size(); ++i) {
+            float d = std::hypot(pos.x - m_waypoints[i].x, pos.y - m_waypoints[i].y);
+            if (d < minDist) {
+                minDist = d;
+                closestIdx = static_cast<int>(i);
+            }
+        }
+        // Si pasa del último al primero, cuenta la vuelta
+        if (closestIdx == 0 && m_currentWaypointIndex == m_waypoints.size() - 1) {
+            if (m_hasStartedLap) {
+                m_laps++;
+                m_hasStartedLap = false;
+                if (m_laps >= m_totalLaps) {
+                    moveSpeed = 0.f;
+                }
+            }
+        } else if (closestIdx != 0) {
+            m_hasStartedLap = true;
+        }
+        m_currentWaypointIndex = closestIdx;
     }
 }

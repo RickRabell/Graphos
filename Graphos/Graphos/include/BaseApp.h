@@ -3,6 +3,7 @@
 #include "Window.h"
 #include "CShape.h"
 #include "ECS/Actor.h"
+#include "ECS/A_Player.h"
 #include "EngineGUI.h"
 #include <vector>
 
@@ -83,6 +84,15 @@ public:
   void
 	renderTimer();
 
+  void
+	updatePodium();
+
+  void
+	renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor);
+
+  void
+  renderPodiumWindow();
+
 private:
 
 	std::vector<EngineUtilities::TSharedPointer<Actor>> m_actors; ///< List of actors managed by the application.
@@ -117,4 +127,6 @@ private:
 	EngineGUI m_engineGUI;
 
   sf::Clock m_appTimer;
+
+  EngineUtilities::TSharedPointer<A_Player> m_player;
 };

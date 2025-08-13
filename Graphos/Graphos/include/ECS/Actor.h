@@ -84,6 +84,27 @@ public:
 	EngineUtilities::TSharedPointer<T>
 	getComponent();
 
+	//---------------------------------------------------------------------------------------------
+    int getLaps() const { return m_laps; }
+    int getTotalLaps() const { return m_totalLaps; }
+    void setTotalLaps(int laps) { m_totalLaps = laps; }
+		int getPlace() const { return m_place; }
+		void setPlace(int place) { m_place = place; }
+
+public:
+	std::vector<sf::Vector2f> m_waypoints;
+	float m_speed = 200.0f;
+	float m_maxSpeed = 250.0f;
+	int m_initialPosIndex = 0;
+	int m_currentWaypointIndex = 0;
+
+protected:
+    int m_laps = 0;
+    int m_totalLaps = 3; // Puedes hacerlo configurable
+    bool m_hasStartedLap = false; // Para evitar contar la vuelta inicial
+		int m_place;
+
+		//---------------------------------------------------------------------------------------------
 private:
 	/*
 		*  @brief Name of the actor.
