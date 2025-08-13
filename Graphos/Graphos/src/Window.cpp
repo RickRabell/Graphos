@@ -25,10 +25,6 @@ Window::~Window() {
 
 void
 Window::handleEvents(EngineGUI& engineGUI) {
-
-	//while (m_windowPtr->isOpen())
-	//{
-	//}
 		// Process events
 	while (const std::optional event = m_windowPtr->pollEvent())
 	{
@@ -86,7 +82,6 @@ void
 Window::update() {
 	// Almacena el deltaTime una sola vez
 	deltaTime = clock.restart();
-
 }
 
 void

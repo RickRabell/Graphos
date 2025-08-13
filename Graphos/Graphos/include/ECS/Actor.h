@@ -67,9 +67,17 @@ public:
 	void
 	destroy() override;
 
+	/*
+		*  @brief Sets the texture for the actor.
+		*  @param texture Shared pointer to the texture to be applied.
+	*/
 	void
 	setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
 
+	/*
+		*  @brief Gets the name of the actor.
+		*  @return The actor's name as a string.
+	*/
 	std::string
 	getName() {
 		return m_name;
@@ -84,37 +92,92 @@ public:
 	EngineUtilities::TSharedPointer<T>
 	getComponent();
 
-	// Añade esta versión const del método getComponent
+	/*
+		*  @brief Const version of getComponent that retrieves a component of type T.
+		*  @tparam T Type of the component to retrieve.
+		*  @return Const shared pointer to the component if found, otherwise an empty pointer.
+	*/
 	template<typename T>
 	EngineUtilities::TSharedPointer<T>
 	getComponent() const;
 
-	//---------------------------------------------------------------------------------------------
-    int getLaps() const { return m_laps; }
-    int getTotalLaps() const { return m_totalLaps; }
-    void setTotalLaps(int laps) { m_totalLaps = laps; }
-		int getPlace() const { return m_place; }
-		void setPlace(int place) { m_place = place; }
+  /*
+  *  @brief Gets the current number of laps completed by the actor.
+  */
+  int 
+  getLaps() const { return m_laps; }
 
-public:
-	std::vector<sf::Vector2f> m_waypoints;
-	float m_speed = 200.0f;
-	float m_maxSpeed = 250.0f;
-	int m_initialPosIndex = 0;
-	int m_currentWaypointIndex = 0;
+  /*
+  *  @brief Gets the total number of laps required for the actor.
+  */
+  int 
+  getTotalLaps() const { return m_totalLaps; }
 
-protected:
-    int m_laps = 0;
-    int m_totalLaps = 3; // Puedes hacerlo configurable
-    bool m_hasStartedLap = false; // Para evitar contar la vuelta inicial
-		int m_place;
+  /*
+  *  @brief Sets the total number of laps for the actor.
+  *  @param laps The total number of laps to set.
+  */
+  void
+  setTotalLaps(int laps) { m_totalLaps = laps; }
 
-		//---------------------------------------------------------------------------------------------
-private:
-	/*
-		*  @brief Name of the actor.
-	*/
-	std::string m_name = "Actor";
+  /*
+  *  @brief Gets the current place or position of the actor.
+  */
+  int 
+  getPlace() const { return m_place; }
+
+  /*
+  *  @brief Sets the current place or position of the actor.
+  *  @param place The place to set for the actor.
+  */
+  void
+  setPlace(int place) { m_place = place; }
+
+  public:
+  /*
+  *  @brief List of waypoints for the actor to follow.
+  */
+  std::vector<sf::Vector2f> m_waypoints;
+  /*
+  *  @brief The current speed of the actor.
+  */
+  float m_speed = 200.0f;
+  /*
+  *  @brief The maximum speed the actor can reach.
+  */
+  float m_maxSpeed = 250.0f;
+  /*
+  *  @brief The initial index position of the actor.
+  */
+  int m_initialPosIndex = 0;
+  /*
+  *  @brief The current waypoint index the actor is targeting.
+  */
+  int m_currentWaypointIndex = 0;
+
+  protected:
+  /*
+  *  @brief The number of laps completed by the actor.
+  */
+  int m_laps = 0;
+  /*
+  *  @brief The total number of laps required for the actor.
+  */
+  int m_totalLaps = 3;
+  /*
+  *  @brief Indicates if the actor has started a lap.
+  */
+  bool m_hasStartedLap = false;
+  /*
+  *  @brief The current place or position of the actor.
+  */
+  int m_place;
+
+  private:
+  /*
+  *  @brief Name of the actor.
+  */
+  std::string m_name = "Actor";
 };
 
 /*
@@ -138,7 +201,12 @@ Actor::getComponent() {
 	return EngineUtilities::TSharedPointer<T>();
 }
 
-// Añade esta versión const del método getComponent
+/*
+	*  @brief Retrieves a component of type T attached to the actor.
+	*         Iterates through all components and returns the first matching type.
+	*  @tparam T Type of the component to retrieve.
+	*  @return Shared pointer to the component if found, otherwise an empty pointer.
+*/
 template<typename T>
 inline EngineUtilities::TSharedPointer<T> 
 Actor::getComponent() const {

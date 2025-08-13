@@ -5,11 +5,13 @@ Actor::Actor(const std::string& actorName) {
   m_name = actorName;
   
   //Setup shape
-  EngineUtilities::TSharedPointer<CShape> shape = EngineUtilities::MakeShared<CShape>();
+  EngineUtilities::TSharedPointer<CShape> 
+  shape = EngineUtilities::MakeShared<CShape>();
   addComponent(shape);
 
   //Setup transform
-  EngineUtilities::TSharedPointer<Transform> transform = EngineUtilities::MakeShared<Transform>();
+  EngineUtilities::TSharedPointer<Transform> 
+  transform = EngineUtilities::MakeShared<Transform>();
   addComponent(transform);
 }
 

@@ -97,9 +97,15 @@ public:
   void
   display();
 
+  /*
+    *  @brief Updates the window state, including timing and any per-frame logic.
+  */
   void
   update();
 
+  /*
+    *  @brief Renders the contents of the window, including all draw calls and GUI.
+  */
   void
   render();
 

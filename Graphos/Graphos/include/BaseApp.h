@@ -8,11 +8,14 @@
 #include <vector>
 
 namespace {
-    inline float Distance(const sf::Vector2f& a, const sf::Vector2f& b) {
-        float dx = a.x - b.x;
-        float dy = a.y - b.y;
-        return std::sqrt(dx * dx + dy * dy);
-    }
+  /*
+    *  @brief Calculates the Euclidean distance between two 2D points.
+  */
+  inline float Distance(const sf::Vector2f& a, const sf::Vector2f& b) {
+    float dx = a.x - b.x;
+    float dy = a.y - b.y;
+    return std::sqrt(dx * dx + dy * dy);
+  }
 }
 
 /**
@@ -89,15 +92,28 @@ public:
   void
   destroy();
 
+  /*
+    *  @brief Renders the timer on the screen.
+  */
   void
-	renderTimer();
+  renderTimer();
 
+  /*
+    *  @brief Updates the podium standings based on current actor positions.
+  */
   void
-	updatePodium();
+  updatePodium();
 
+  /*
+    *  @brief Renders the laps window for the specified actor.
+    *  @param actor Shared pointer to the actor whose laps are displayed.
+  */
   void
-	renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor);
+  renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor);
 
+  /*
+    *  @brief Renders the podium window showing the current race standings.
+  */
   void
   renderPodiumWindow();
 
@@ -120,21 +136,45 @@ private:
   //sf::CircleShape* m_circle;
   //EngineUtilities::TSharedPointer<CShape> m_shapePtr;
 
+  /*
+   *  @brief Pointer to the main circle actor used in the application.
+  */
   EngineUtilities::TSharedPointer<Actor> m_ACircle;
 
+  /*
+    *  @brief List of waypoints as 2D vectors for path following or navigation.
+  */
   std::vector<sf::Vector2f> m_waypoints;
 
-	std::vector<EngineUtilities::TSharedPointer<CShape>> m_path; ///< List of waypoints forming the path.
+  /*
+    *  @brief List of shape components representing the path waypoints.
+  */
+  std::vector<EngineUtilities::TSharedPointer<CShape>> m_path; ///< List of waypoints forming the path.
 
-	int m_currentWaypointIndex = 0; ///< Index of the current waypoint in the path.
+  /*
+    *  @brief Index of the current waypoint in the path.
+  */
+  int m_currentWaypointIndex = 0; ///< Index of the current waypoint in the path.
 
+  /*
+     *  @brief Pointer to the track actor managed by the application.
+  */
   EngineUtilities::TSharedPointer<Actor> m_track;
 
   //EngineUtilities::TSharedPointer<Actor> m_checks;
 
-	EngineGUI m_engineGUI;
+  /*
+    *  @brief Engine GUI manager for handling GUI rendering and updates.
+  */
+  EngineGUI m_engineGUI;
 
+  /*
+     *  @brief Application timer for tracking elapsed time.
+  */
   sf::Clock m_appTimer;
 
+  /*
+     *  @brief Pointer to the player actor instance.
+  */
   EngineUtilities::TSharedPointer<A_Player> m_player;
-};
+  };

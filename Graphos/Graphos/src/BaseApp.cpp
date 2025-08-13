@@ -43,7 +43,6 @@ BaseApp::init() {
   m_engineGUI.init(m_windowPtr);
 
 	// Define waypoints for the path
-  
   //m_waypoints.push_back(sf::Vector2f(400.f, 900.f));
   m_waypoints.push_back(sf::Vector2f(75.f, 85.f));
 	//m_waypoints.push_back(sf::Vector2f(175.f, 85.f));
@@ -87,7 +86,6 @@ BaseApp::init() {
     //m_actors.push_back(m_track);
   }
 
-  // -----------------------------------------------------------------------------------------------
   // Path Markers
   for (const auto& waypoint : m_waypoints) {
     auto marker = EngineUtilities::MakeShared<CShape>();
@@ -99,9 +97,7 @@ BaseApp::init() {
     m_path.push_back(marker);
 	}
 
-  // ------------------------------------------------------------------------------------------------
-
-  // --- Crear un Racer IA como ejemplo ---
+  // Create Racers
   auto IA_01 = EngineUtilities::MakeShared<A_Racer>("IA 01", 0);
   if (IA_01) {
     IA_01->setWayPoints(m_waypoints);
@@ -118,7 +114,6 @@ BaseApp::init() {
 
     m_actors.push_back(IA_01);
   }
-	// ------------------------------------------------------------------------------------------------
 
   // Create Circle Actor
   m_ACircle = EngineUtilities::MakeShared<Actor>("Circle Actor");
@@ -137,7 +132,7 @@ BaseApp::init() {
 
 		m_actors.push_back(m_ACircle);
   } 
-  /*
+	/* Individual checks for Waypoints
   m_checks = EngineUtilities::MakeShared<Actor>("Track Actor");
   if (m_checks) {
     
@@ -172,26 +167,26 @@ BaseApp::init() {
     return false;
   }
 
-  // --- Crear el jugador controlable ---
   m_player = EngineUtilities::MakeShared<A_Player>("Player", 0);
   if (m_player) {
-      m_player->m_waypoints = m_waypoints; 
-      m_player->getComponent<CShape>()->createShape(CIRCLE);
-      m_player->getComponent<CShape>()->setFillColor(sf::Color::Red); 
-      m_player->getComponent<Transform>()->setPosition(m_waypoints[0]); // Asegura posición visible
-      m_player->getComponent<Transform>()->setScale(sf::Vector2f(3.0f, 3.0f));
-      m_player->setTotalLaps(3);
+    m_player->m_waypoints = m_waypoints; 
+    m_player->getComponent<CShape>()->createShape(CIRCLE);
+    m_player->getComponent<CShape>()->setFillColor(sf::Color::Red); 
+    m_player->getComponent<Transform>()->setPosition(m_waypoints[0]);
+    m_player->getComponent<Transform>()->setScale(sf::Vector2f(3.0f, 3.0f));
+    m_player->setTotalLaps(3);
 
-      if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
-          MESSAGE("BaseApp", "init", "Can't load the Player Texture");
-      } else {
-          m_player->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
-      }
+    if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
+        MESSAGE("BaseApp", "init", "Can't load the Player Texture");
+    } else {
+        m_player->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
+    }
 
-      m_actors.push_back(m_player);
-  } else {
-      ERROR("BaseApp", "init", "Failed to create Player pointer");
-      return false;
+    m_actors.push_back(m_player);
+  } 
+  else {
+    ERROR("BaseApp", "init", "Failed to create Player pointer");
+    return false;
   }
 
   return true;
@@ -205,8 +200,6 @@ BaseApp::update() {
 
 	// Actualizar el GUI del Engine
 	m_engineGUI.update(m_windowPtr, m_windowPtr->deltaTime);
-	m_engineGUI.outliner(m_actors);
-	m_engineGUI.inspector(m_actors);
   
   renderTimer();
 
@@ -227,33 +220,14 @@ BaseApp::update() {
 
 void 
 BaseApp::render() {
-  // Limpiar, dibujar y mostrar
-  //m_windowPtr->clear();
-  //m_windowPtr->draw(*m_circle);
-  //m_windowPtr->display();
-
   if (!m_windowPtr) {
     return;
   }
   m_windowPtr->clear();
-  /*if (m_shapePtr) {
-    m_shapePtr->render(m_windowPtr);
-  }*/
-  /*if (!m_ACircle.isNull()) {
-    m_ACircle->getComponent<CShape>()->render(m_windowPtr);
-  }*/
+
   if (!m_track.isNull()) {
     m_track->getComponent<CShape>()->render(m_windowPtr);
   }
-
-  /*if (!m_checks.isNull()) {
-    m_checks->getComponent<CShape>()->render(m_windowPtr);
-  }*/
-
-  /*if (!m_ACircle.isNull()) {
-    //m_ACircle->render(m_windowPtr);
-    m_ACircle->getComponent<CShape>()->render(m_windowPtr);
-  }*/
 
   for (auto& markers : m_path) {
 		markers->render(m_windowPtr);
@@ -262,7 +236,6 @@ BaseApp::render() {
   for (auto& actor : m_actors) {
     if (!actor.isNull()) {
       actor->render(m_windowPtr);
-      //actor->getComponent<CShape>()->render(m_windowPtr);
     }
   }
 
@@ -270,11 +243,10 @@ BaseApp::render() {
 
   renderTimer();
   
-  // Usar un actor válido para la ventana de Laps
   if (!m_player.isNull()) {
-      renderLapsWindow(m_player);
+    renderLapsWindow(m_player);
   } else if (!m_actors.empty() && !m_actors[0].isNull()) {
-      renderLapsWindow(m_actors[0]);
+    renderLapsWindow(m_actors[0]);
   }
   
   renderPodiumWindow();
@@ -286,109 +258,60 @@ BaseApp::render() {
 
 void 
 BaseApp::destroy() {
-  // Destroy ImGui
 	m_engineGUI.destroy();
-  //delete m_circle;
-  //m_window->destroy();
 }
 
 void
 BaseApp::renderTimer() {
-    // Get the elapsed time
-    sf::Time elapsed = m_appTimer.getElapsedTime();
+  sf::Time elapsed = m_appTimer.getElapsedTime();
 
-    int totalSeconds = static_cast<int>(std::max(0.f, elapsed.asSeconds()));
-    int totalMilliseconds = static_cast<int>(elapsed.asMilliseconds());
+  int totalSeconds = static_cast<int>(std::max(0.f, elapsed.asSeconds()));
+  int totalMilliseconds = static_cast<int>(elapsed.asMilliseconds());
 
-    int minutes = 0;
-    int seconds = 0;
-    int milliseconds = 0;
+  int minutes = 0;
+  int seconds = 0;
+  int milliseconds = 0;
 
-    // Solo realiza la división/módulo si el divisor es distinto de cero
-    if (totalSeconds >= 60) {
-        minutes = totalSeconds / 60;
-        seconds = totalSeconds % 60;
-    } else {
-        minutes = 0;
-        seconds = totalSeconds;
-    }
+  // Solo realiza la división/módulo si el divisor es distinto de cero
+  if (totalSeconds >= 60) {
+    minutes = totalSeconds / 60;
+    seconds = totalSeconds % 60;
+  } else {
+    minutes = 0;
+    seconds = totalSeconds;
+  }
 
-    if (totalMilliseconds >= 1000) {
-        milliseconds = totalMilliseconds % 1000;
-    } else if (totalMilliseconds > 0) {
-        milliseconds = totalMilliseconds;
-    } else {
-        milliseconds = 0;
-    }
+  if (totalMilliseconds >= 1000) {
+    milliseconds = totalMilliseconds % 1000;
+  } else if (totalMilliseconds > 0) {
+    milliseconds = totalMilliseconds;
+  } else {
+    milliseconds = 0;
+  }
 
-    // Create a formatted string for the timer
-    char timeStr[32];
-    std::sprintf(timeStr, "%02d:%02d:%03d", minutes, seconds, milliseconds);
+  // Create a formatted string for the timer
+  char timeStr[32];
+  std::sprintf(timeStr, "%02d:%02d:%03d", minutes, seconds, milliseconds);
 
-    // Display the timer with ImGui
-    ImGui::Begin("TIME");
-    ImGui::SetWindowSize(ImVec2(700, 300), ImGuiCond_FirstUseEver);
+  // Display the timer with ImGui
+  ImGui::Begin("TIME");
+  ImGui::SetWindowSize(ImVec2(700, 300), ImGuiCond_FirstUseEver);
 
-    // Make the text larger and centered
-    ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Use default font
-    float windowWidth = ImGui::GetWindowSize().x;
-    float textWidth = ImGui::CalcTextSize(timeStr).x;
-    ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
+  // Make the text larger and centered
+  ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);
+  float windowWidth = ImGui::GetWindowSize().x;
+  float textWidth = ImGui::CalcTextSize(timeStr).x;
+  ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
 
-    ImGui::Text("%s", timeStr);
-    ImGui::PopFont();
+  ImGui::Text("%s", timeStr);
+  ImGui::PopFont();
 
-    ImGui::End();
+  ImGui::End();
 }
 
-void BaseApp::updatePodium() {
-    /* Filtrar actores nulos antes de ordenar
-    std::vector<EngineUtilities::TSharedPointer<Actor>> validActors;
-    for (const auto& actor : m_actors) {
-        if (!actor.isNull()) {
-            validActors.push_back(actor);
-        }
-    }
-    
-    // Ordenar por criterios (vueltas, waypoint actual, distancia)
-    std::sort(validActors.begin(), validActors.end(), [this](const auto& a, const auto& b) {
-        // Criterio 1: Número de vueltas (más vueltas = mejor posición)
-        if (a->getLaps() != b->getLaps())
-            return a->getLaps() > b->getLaps();
-            
-        // Criterio 2: Índice de waypoint actual (waypoint más avanzado = mejor posición)
-        if (a->m_currentWaypointIndex != b->m_currentWaypointIndex)
-            return a->m_currentWaypointIndex > b->m_currentWaypointIndex;
-            
-        // Criterio 3: Distancia al siguiente waypoint (más cerca = mejor posición)
-        if (!m_waypoints.empty() && a->m_waypoints.size() > 0 && b->m_waypoints.size() > 0) {
-            auto aPos = a->getComponent<Transform>()->getPosition();
-            auto bPos = b->getComponent<Transform>()->getPosition();
-            
-            // Calcular índice del siguiente waypoint de forma segura
-            int aNextIdx = (a->m_currentWaypointIndex + 1) % a->m_waypoints.size();
-            int bNextIdx = (b->m_currentWaypointIndex + 1) % b->m_waypoints.size();
-            
-            auto aNext = a->m_waypoints[aNextIdx];
-            auto bNext = b->m_waypoints[bNextIdx];
-            
-            float aDist = std::sqrt((aPos.x - aNext.x)*(aPos.x - aNext.x) + 
-                                    (aPos.y - aNext.y)*(aPos.y - aNext.y));
-            float bDist = std::sqrt((bPos.x - bNext.x)*(bPos.x - bNext.x) + 
-                                    (bPos.y - bNext.y)*(bPos.y - bNext.y));
-                                    
-            return aDist < bDist;
-        }
-        
-        // En caso de no poder comparar, mantener el orden actual
-        return false;
-    });
-    
-    // Asignar lugares usando los actores válidos ordenados
-    for (size_t i = 0; i < validActors.size(); ++i) {
-        validActors[i]->setPlace(static_cast<int>(i) + 1);
-    }*/
-    // Filtrar actores nulos antes de ordenar
+void 
+BaseApp::updatePodium() {
+  // Filtrar actores nulos antes de ordenar
   std::vector<EngineUtilities::TSharedPointer<Actor>> validActors;
   for (const auto& actor : m_actors) {
     if (!actor.isNull()) validActors.push_back(actor);
@@ -402,6 +325,7 @@ void BaseApp::updatePodium() {
       break;
     }
   }
+
   if (raceFinished) {
     for (const auto& actor : validActors) {
       // Si es A_Player
@@ -415,78 +339,76 @@ void BaseApp::updatePodium() {
 
   // Ordenar por (laps desc, currentWaypoint desc, distToNext asc, totalTime asc)
   std::sort(validActors.begin(), validActors.end(), [](const auto& a, const auto& b) {
-    if (a->getLaps() != b->getLaps())
-      return a->getLaps() > b->getLaps();
-    if (a->m_currentWaypointIndex != b->m_currentWaypointIndex)
-      return a->m_currentWaypointIndex > b->m_currentWaypointIndex;
+  if (a->getLaps() != b->getLaps())
+    return a->getLaps() > b->getLaps();
+  if (a->m_currentWaypointIndex != b->m_currentWaypointIndex)
+    return a->m_currentWaypointIndex > b->m_currentWaypointIndex;
 
-    float aDist = 0.f, bDist = 0.f;
-    // Métodos utilitarios para obtener distancia al siguiente waypoint
-    auto aPlayer = dynamic_cast<const A_Player*>(a.get());
-    auto bPlayer = dynamic_cast<const A_Player*>(b.get());
-    if (aPlayer) aDist = aPlayer->getDistToNextWaypoint();
-    else {
-      if (!a->m_waypoints.empty()) {
-        aDist = Distance(a->getComponent<Transform>()->getPosition(),
-          a->m_waypoints[(a->m_currentWaypointIndex + 1) % a->m_waypoints.size()]);
-      }
-      else {
-        aDist = std::numeric_limits<float>::max(); // Assign a large value to indicate no valid waypoint
-      }
-    }
-    if (bPlayer) bDist = bPlayer->getDistToNextWaypoint();
-    else {
-      if (!b->m_waypoints.empty()) {
-        bDist = Distance(b->getComponent<Transform>()->getPosition(),
-          b->m_waypoints[(b->m_currentWaypointIndex + 1) % b->m_waypoints.size()]);
-      }
-      else {
-        bDist = std::numeric_limits<float>::max(); // Assign a large value to indicate no valid waypoint
-      }
-    }
-    if (aDist != bDist)
-      return aDist < bDist;
+  float aDist = 0.f, bDist = 0.f;
 
-    // Desempate por tiempo total (si existe)
-    float aTime = 0.f, bTime = 0.f;
-    if (aPlayer) aTime = aPlayer->getTotalTime();
-    if (bPlayer) bTime = bPlayer->getTotalTime();
-    return aTime < bTime;
-    });
+  // Métodos utilitarios para obtener distancia al siguiente waypoint
+  auto aPlayer = dynamic_cast<const A_Player*>(a.get());
+  auto bPlayer = dynamic_cast<const A_Player*>(b.get());
+
+  if (aPlayer) aDist = aPlayer->getDistToNextWaypoint();
+  else {
+    if (!a->m_waypoints.empty()) {
+      aDist = Distance(a->getComponent<Transform>()->getPosition(),
+        a->m_waypoints[(a->m_currentWaypointIndex + 1) % a->m_waypoints.size()]);
+    }
+    else {
+      aDist = std::numeric_limits<float>::max();
+    }
+  }
+  if (bPlayer) bDist = bPlayer->getDistToNextWaypoint();
+  else {
+    if (!b->m_waypoints.empty()) {
+      bDist = Distance(b->getComponent<Transform>()->getPosition(),
+        b->m_waypoints[(b->m_currentWaypointIndex + 1) % b->m_waypoints.size()]);
+    }
+    else {
+      bDist = std::numeric_limits<float>::max();
+    }
+  }
+
+  if (aDist != bDist) return aDist < bDist;
+
+  // Desempate por tiempo total (si existe)
+  float aTime = 0.f, bTime = 0.f;
+  if (aPlayer) aTime = aPlayer->getTotalTime();
+  if (bPlayer) bTime = bPlayer->getTotalTime();
+  return aTime < bTime;
+  });
 
   // Asignar lugares usando los actores válidos ordenados
   for (size_t i = 0; i < validActors.size(); ++i) {
-    validActors[i]->setPlace(static_cast<int>(i) + 1);
+  validActors[i]->setPlace(static_cast<int>(i) + 1);
   }
 }
 
-void BaseApp::renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor) {
-    if (!actor) return; // <-- Evita acceso nulo
-    ImGui::Begin("LAPS");
-    ImGui::SetWindowSize(ImVec2(700, 100), ImGuiCond_FirstUseEver);
+void 
+BaseApp::renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor) {
+  if (!actor) return; // <-- Evita acceso nulo
+  ImGui::Begin("LAPS");
+  ImGui::SetWindowSize(ImVec2(700, 100), ImGuiCond_FirstUseEver);
 
-    int currentLap = actor->getLaps();
-    int totalLaps = actor->getTotalLaps();
-    ImGui::Text("%d / %d", currentLap, totalLaps);
+  int currentLap = actor->getLaps();
+  int totalLaps = actor->getTotalLaps();
+  ImGui::Text("%d / %d", currentLap, totalLaps);
 
-    ImGui::End();
+  ImGui::End();
 }
 
-void BaseApp::renderPodiumWindow() {
-    ImGui::Begin("PODIUM");
-    ImGui::SetWindowSize(ImVec2(300, 400), ImGuiCond_FirstUseEver);
+void 
+BaseApp::renderPodiumWindow() {
+  ImGui::Begin("PODIUM");
+  ImGui::SetWindowSize(ImVec2(300, 400), ImGuiCond_FirstUseEver);
 
-    for (const auto& actor : m_actors) {
-        if (!actor) continue; // <-- Evita actores nulos
-        ImGui::Text("%d° : %s", actor->getPlace(), actor->getName().c_str());
-        // Si tienes el sprite, puedes mostrarlo con ImGui::Image
-        // Ejemplo:
-        // if (auto shape = actor->getComponent<CShape>()) {
-        //     auto& texture = shape->getTexture();
-        //     ImGui::Image(texture, ImVec2(32, 32));
-        // }
-    }
+  for (const auto& actor : m_actors) {
+    if (!actor) continue; // <-- Evita actores nulos
+    ImGui::Text("%d° : %s", actor->getPlace(), actor->getName().c_str());
+  }
 
-    ImGui::End();
+  ImGui::End();
 }
 
