@@ -84,6 +84,11 @@ public:
 	EngineUtilities::TSharedPointer<T>
 	getComponent();
 
+	// Añade esta versión const del método getComponent
+	template<typename T>
+	EngineUtilities::TSharedPointer<T>
+	getComponent() const;
+
 	//---------------------------------------------------------------------------------------------
     int getLaps() const { return m_laps; }
     int getTotalLaps() const { return m_totalLaps; }
@@ -131,4 +136,19 @@ Actor::getComponent() {
 	}
 	// Devuelve un TSharedPointer vacío si no se encuentra el componente
 	return EngineUtilities::TSharedPointer<T>();
+}
+
+// Añade esta versión const del método getComponent
+template<typename T>
+inline EngineUtilities::TSharedPointer<T> 
+Actor::getComponent() const {
+    for (const auto& component : components) {
+        EngineUtilities::TSharedPointer<T> 
+        specificComponent = component.template dynamic_pointer_cast<T>();
+        
+        if (specificComponent) {
+            return specificComponent;
+        }
+    }
+    return EngineUtilities::TSharedPointer<T>();
 }

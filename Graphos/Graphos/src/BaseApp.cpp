@@ -101,26 +101,6 @@ BaseApp::init() {
 
   // ------------------------------------------------------------------------------------------------
 
-  auto player = EngineUtilities::MakeShared<A_Player>("Player", 0);
-  if (player) {
-    player->m_waypoints = m_waypoints; // Asigna los waypoints al jugador
-    player->getComponent<CShape>()->createShape(CIRCLE);
-    player->getComponent<CShape>()->setFillColor(sf::Color::Red); // Color diferente para distinguirlo
-    player->getComponent<Transform>()->setPosition(m_waypoints[0]);
-    player->getComponent<Transform>()->setScale(sf::Vector2f(3.0f, 3.0f));
-    player->setTotalLaps(3); // O el número de vueltas que desees
-
-    // Asigna textura si tienes una específica para el jugador
-    if (!resourceMan.loadTexture("Sprites/Mushroom", "png")) {
-      MESSAGE("BaseApp", "init", "Can't load the Player Texture");
-    }
-    else {
-      player->setTexture(resourceMan.getTexture("Sprites/Mushroom"));
-    }
-
-    m_actors.push_back(player);
-  }
-
   // --- Crear un Racer IA como ejemplo ---
   auto IA_01 = EngineUtilities::MakeShared<A_Racer>("IA 01", 0);
   if (IA_01) {
@@ -193,7 +173,7 @@ BaseApp::init() {
   }
 
   // --- Crear el jugador controlable ---
-  m_player = EngineUtilities::MakeShared<A_Player>("Player", 0); // Guardamos directamente en m_player
+  m_player = EngineUtilities::MakeShared<A_Player>("Player", 0);
   if (m_player) {
       m_player->m_waypoints = m_waypoints; 
       m_player->getComponent<CShape>()->createShape(CIRCLE);
@@ -316,34 +296,53 @@ void
 BaseApp::renderTimer() {
     // Get the elapsed time
     sf::Time elapsed = m_appTimer.getElapsedTime();
-    
-    // Calculate minutes, seconds, and milliseconds
-    int minutes = static_cast<int>(elapsed.asSeconds()) / 60;
-    int seconds = static_cast<int>(elapsed.asSeconds()) % 60;
-    int milliseconds = static_cast<int>(elapsed.asMilliseconds()) % 1000;
-    
+
+    int totalSeconds = static_cast<int>(std::max(0.f, elapsed.asSeconds()));
+    int totalMilliseconds = static_cast<int>(elapsed.asMilliseconds());
+
+    int minutes = 0;
+    int seconds = 0;
+    int milliseconds = 0;
+
+    // Solo realiza la división/módulo si el divisor es distinto de cero
+    if (totalSeconds >= 60) {
+        minutes = totalSeconds / 60;
+        seconds = totalSeconds % 60;
+    } else {
+        minutes = 0;
+        seconds = totalSeconds;
+    }
+
+    if (totalMilliseconds >= 1000) {
+        milliseconds = totalMilliseconds % 1000;
+    } else if (totalMilliseconds > 0) {
+        milliseconds = totalMilliseconds;
+    } else {
+        milliseconds = 0;
+    }
+
     // Create a formatted string for the timer
     char timeStr[32];
     std::sprintf(timeStr, "%02d:%02d:%03d", minutes, seconds, milliseconds);
-    
+
     // Display the timer with ImGui
     ImGui::Begin("TIME");
     ImGui::SetWindowSize(ImVec2(700, 300), ImGuiCond_FirstUseEver);
-    
+
     // Make the text larger and centered
     ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]); // Use default font
     float windowWidth = ImGui::GetWindowSize().x;
     float textWidth = ImGui::CalcTextSize(timeStr).x;
     ImGui::SetCursorPosX((windowWidth - textWidth) * 0.5f);
-    
+
     ImGui::Text("%s", timeStr);
     ImGui::PopFont();
-    
+
     ImGui::End();
 }
 
 void BaseApp::updatePodium() {
-    // Filtrar actores nulos antes de ordenar
+    /* Filtrar actores nulos antes de ordenar
     std::vector<EngineUtilities::TSharedPointer<Actor>> validActors;
     for (const auto& actor : m_actors) {
         if (!actor.isNull()) {
@@ -388,7 +387,77 @@ void BaseApp::updatePodium() {
     // Asignar lugares usando los actores válidos ordenados
     for (size_t i = 0; i < validActors.size(); ++i) {
         validActors[i]->setPlace(static_cast<int>(i) + 1);
+    }*/
+    // Filtrar actores nulos antes de ordenar
+  std::vector<EngineUtilities::TSharedPointer<Actor>> validActors;
+  for (const auto& actor : m_actors) {
+    if (!actor.isNull()) validActors.push_back(actor);
+  }
+
+  // Congelar todos si algún actor terminó
+  bool raceFinished = false;
+  for (const auto& actor : validActors) {
+    if (actor->getLaps() >= actor->getTotalLaps()) {
+      raceFinished = true;
+      break;
     }
+  }
+  if (raceFinished) {
+    for (const auto& actor : validActors) {
+      // Si es A_Player
+      auto player = dynamic_cast<A_Player*>(actor.get());
+      if (player && !player->isFrozen()) player->freeze();
+      // Si es IA, congelar velocidad
+      auto racer = dynamic_cast<A_Racer*>(actor.get());
+      if (racer) racer->setSpeed(0.f);
+    }
+  }
+
+  // Ordenar por (laps desc, currentWaypoint desc, distToNext asc, totalTime asc)
+  std::sort(validActors.begin(), validActors.end(), [](const auto& a, const auto& b) {
+    if (a->getLaps() != b->getLaps())
+      return a->getLaps() > b->getLaps();
+    if (a->m_currentWaypointIndex != b->m_currentWaypointIndex)
+      return a->m_currentWaypointIndex > b->m_currentWaypointIndex;
+
+    float aDist = 0.f, bDist = 0.f;
+    // Métodos utilitarios para obtener distancia al siguiente waypoint
+    auto aPlayer = dynamic_cast<const A_Player*>(a.get());
+    auto bPlayer = dynamic_cast<const A_Player*>(b.get());
+    if (aPlayer) aDist = aPlayer->getDistToNextWaypoint();
+    else {
+      if (!a->m_waypoints.empty()) {
+        aDist = Distance(a->getComponent<Transform>()->getPosition(),
+          a->m_waypoints[(a->m_currentWaypointIndex + 1) % a->m_waypoints.size()]);
+      }
+      else {
+        aDist = std::numeric_limits<float>::max(); // Assign a large value to indicate no valid waypoint
+      }
+    }
+    if (bPlayer) bDist = bPlayer->getDistToNextWaypoint();
+    else {
+      if (!b->m_waypoints.empty()) {
+        bDist = Distance(b->getComponent<Transform>()->getPosition(),
+          b->m_waypoints[(b->m_currentWaypointIndex + 1) % b->m_waypoints.size()]);
+      }
+      else {
+        bDist = std::numeric_limits<float>::max(); // Assign a large value to indicate no valid waypoint
+      }
+    }
+    if (aDist != bDist)
+      return aDist < bDist;
+
+    // Desempate por tiempo total (si existe)
+    float aTime = 0.f, bTime = 0.f;
+    if (aPlayer) aTime = aPlayer->getTotalTime();
+    if (bPlayer) bTime = bPlayer->getTotalTime();
+    return aTime < bTime;
+    });
+
+  // Asignar lugares usando los actores válidos ordenados
+  for (size_t i = 0; i < validActors.size(); ++i) {
+    validActors[i]->setPlace(static_cast<int>(i) + 1);
+  }
 }
 
 void BaseApp::renderLapsWindow(const EngineUtilities::TSharedPointer<Actor>& actor) {
